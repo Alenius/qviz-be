@@ -33,7 +33,6 @@ app.get('/questions', async (request, response) => {
 })
 
 app.get('/answer', async (request, response) => {
-  console.log({ param: request.query })
   const { quizId, questionId, userAnswer } = request.query
   const {
     correctAnswer,

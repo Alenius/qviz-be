@@ -19,11 +19,8 @@ const getQuestions = async (quizId) => {
 }
 
 const getSingleQuestion = async ({ quizId, questionId }) => {
-  console.log({ quizId, questionId })
   const res = await pool.query(`SELECT answers from quiz WHERE id=${quizId}`)
-  console.log({ rows: res.rows[0].answers })
   const allAnswers = head(res.rows).answers
-  console.log({ allAnswers })
   const rightAnswer = nth(questionId, allAnswers)
   return rightAnswer
 }
