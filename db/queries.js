@@ -1,19 +1,49 @@
-const Pool = require("pg").Pool;
+const { head, nth, split, filter, length, gte, pipe, lte } = require('ramda')
+const { request } = require('express')
+const FuzzySet = require('fuzzyset.js')
+
+const Pool = require('pg').Pool
 const pool = new Pool({
   user: process.env.DB_USER,
-  host: "localhost",
-  database: "qvis",
+  host: 'localhost',
+  database: 'qvis',
   password: process.env.DB_PASSWORD,
   port: 5432,
-});
+})
 
-const getQuestions = async (questionId) => {
+const getQuestions = async (quizId) => {
   const res = await pool.query(
-    `SELECT * from quiz WHERE id=${questionId} ORDER BY id ASC`
-  );
-  return res.rows;
-};
+    `SELECT * from quiz WHERE id=${quizId} ORDER BY id ASC`
+  )
+  return res.rows
+}
+
+const getSingleQuestion = async ({ quizId, questionId }) => {
+  const res = await pool.query(`SELECT answers from quiz WHERE id=${quizId}`)
+  const allAnswers = head(res.rows).answers
+  const rightAnswer = nth(questionId, allAnswers)
+  return rightAnswer
+}
+
+const checkAnswerForQuestion = async ({ quizId, questionId, userAnswer }) => {
+  const answers = await getSingleQuestion({ quizId, questionId })
+  const possibleAnswers = split('/', answers)
+  const fs = FuzzySet(possibleAnswers)
+  const fuzzyMatch = fs.get(userAnswer)
+  // accept answer if any has 0.6 or higher
+  const acceptable = pipe(
+    filter((it) => head(it) > 0.6),
+    length,
+    lte(1)
+  )
+  console.log({ fuzzyMatch }) // keep this for monitoring answer grades
+  return {
+    correctAnswer: possibleAnswers[0],
+    userAnswerWasCorrect: acceptable(fuzzyMatch),
+  }
+}
 
 module.exports = {
   getQuestions,
-};
+  checkAnswerForQuestion,
+}
