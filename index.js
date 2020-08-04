@@ -25,10 +25,8 @@ app.get('/', (request, response) => {
 })
 
 app.get('/questions', async (request, response) => {
-  console.log({ param: request.query.id })
   const questionId = request.query.id
   const allQuestions = await queries.getQuestions(questionId)
-  console.log({ allQuestions: allQuestions[0].questions })
   response.json({ questions: allQuestions })
 })
 
@@ -36,9 +34,14 @@ app.get('/answer', async (request, response) => {
   const { quizId, questionId, userAnswer } = request.query
   const {
     correctAnswer,
+    rating,
     userAnswerWasCorrect,
-  } = await queries.checkAnswerForQuestion({ quizId, questionId, userAnswer })
-  response.json({ userAnswer, correctAnswer, userAnswerWasCorrect })
+  } = await queries.checkAnswerForQuestion({
+    quizId,
+    questionId,
+    userAnswer,
+  })
+  response.json({ userAnswer, rating, correctAnswer, userAnswerWasCorrect })
 })
 
 app.listen(port, () => {
