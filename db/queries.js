@@ -1,5 +1,4 @@
-const { head, nth, split, filter, length, gte, pipe, lte } = require('ramda')
-const { request } = require('express')
+const { head, nth, split, filter, length, pipe, lte, sort } = require('ramda')
 const FuzzySet = require('fuzzyset.js')
 
 const Pool = require('pg').Pool
@@ -30,16 +29,34 @@ const checkAnswerForQuestion = async ({ quizId, questionId, userAnswer }) => {
   const possibleAnswers = split('/', answers)
   const fs = FuzzySet(possibleAnswers)
   const fuzzyMatch = fs.get(userAnswer)
+
   // accept answer if any has 0.6 or higher
-  const acceptable = pipe(
-    filter((it) => head(it) > 0.6),
+  const isAnswerAcceptable = pipe(
+    filter((it) => head(it) > 0.75),
     length,
     lte(1)
   )
-  console.log({ fuzzyMatch }) // keep this for monitoring answer grades
+
+  const getBestMatch = pipe(
+    sort((a, b) => head(b) - head(a)),
+    head
+  )
+
+  if (fuzzyMatch && isAnswerAcceptable(fuzzyMatch)) {
+    const [rating, answer] = getBestMatch(fuzzyMatch)
+    return {
+      correctAnswer: answer,
+      rating,
+      userAnswerWasCorrect: true,
+    }
+  }
+  const [rating, answer] = fuzzyMatch
+    ? getBestMatch(fuzzyMatch)
+    : [null, possibleAnswers[0]]
   return {
-    correctAnswer: possibleAnswers[0],
-    userAnswerWasCorrect: acceptable(fuzzyMatch),
+    correctAnswer: answer,
+    rating,
+    userAnswerWasCorrect: false,
   }
 }
 
