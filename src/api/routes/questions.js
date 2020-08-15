@@ -1,10 +1,12 @@
-const queries = require('../../db/queries')
+const { getAllQuestions } = require('../../services/getAllQuestionsFromQuiz')
 
 const connectQuestionRoutes = async (router) => {
   router.get('/questions', async (request, response) => {
-    console.log({ question: 'yeah' })
-    const questionId = request.query.id
-    const allQuestions = await queries.getQuestions(questionId)
+    const quizId = request.query.quizId
+    if (!quizId) {
+      response.status(400).send('Missing quizId parameter')
+    }
+    const allQuestions = await getAllQuestions(quizId)
     response.json({ questions: allQuestions })
   })
 }
