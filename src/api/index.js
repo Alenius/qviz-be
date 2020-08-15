@@ -1,29 +1,14 @@
-const queries = require('../../../db/queries')
+const { Router } = require('express')
+const { connectQuestionRoutes } = require('./routes/questions')
+const { connectAnswerRoutes } = require('./routes/answers')
 
-const api = async (app) => {
-  app.get('/', (request, response) => {
-    response.json({ info: 'Node.js, Express, and Postgres API' })
-  })
+const connectRoutes = () => {
+  const router = Router()
 
-  app.get('/questions', async (request, response) => {
-    const questionId = request.query.id
-    const allQuestions = await queries.getQuestions(questionId)
-    response.json({ questions: allQuestions })
-  })
+  connectQuestionRoutes(router)
+  connectAnswerRoutes(router)
 
-  app.get('/answer', async (request, response) => {
-    const { quizId, questionId, userAnswer } = request.query
-    const {
-      correctAnswer,
-      rating,
-      userAnswerWasCorrect,
-    } = await queries.checkAnswerForQuestion({
-      quizId,
-      questionId,
-      userAnswer,
-    })
-    response.json({ userAnswer, rating, correctAnswer, userAnswerWasCorrect })
-  })
+  return router
 }
 
-module.exports = api
+module.exports = { connectRoutes }
