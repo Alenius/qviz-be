@@ -13,8 +13,15 @@ const connectQuestionRoutes = async (router) => {
 
   router.post('/questions', async (request, response) => {
     const { questionText, quizId } = request.body
-    const inserted = await createQuestion(quizId, questionText)
-    response.json({ ...inserted })
+    try {
+      const inserted = await createQuestion(quizId, questionText)
+      response.json({ ...inserted })
+    } catch (err) {
+      console.log(err)
+      response
+        .status(500)
+        .send('Something went wrong when writing to the database')
+    }
   })
 }
 

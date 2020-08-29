@@ -24,16 +24,12 @@ const getSingleQuestionFromQuiz = async ({ quizId, questionId }) => {
 }
 
 const createQuestion = async (quizId, questionText) => {
-  try {
-    const res = await pool.query(
-      `INSERT INTO questions (question_text, quiz_id) VALUES ('${questionText}', ${parseInt(
-        quizId
-      )}) RETURNING *;`
-    )
-    return { ...res.rows[0] }
-  } catch (err) {
-    console.error({ err })
-  }
+  const res = await pool.query(
+    `INSERT INTO questions (question_text, quiz_id) VALUES ('${questionText}', ${parseInt(
+      quizId
+    )}) RETURNING *;`
+  )
+  return { ...res.rows[0] }
 }
 
 module.exports = {
