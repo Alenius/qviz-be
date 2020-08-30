@@ -51,8 +51,19 @@ const insertQuestionAndAnswer = async (
   return { ...res.rows[0] }
 }
 
+const createQuiz = async (quizName, author) => {
+  const res = await pool.query(`
+  INSERT INTO quiz (name, author)
+      VALUES('${quizName}', '${author}')
+    RETURNING
+      id AS quiz_idd
+  `)
+  return { ...res.rows[0] }
+}
+
 module.exports = {
   getAllQuestionsFromQuiz,
   getSingleQuestionFromQuiz,
   insertQuestionAndAnswer,
+  createQuiz,
 }
