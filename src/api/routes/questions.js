@@ -1,5 +1,5 @@
 const { getAllQuestions } = require('../../services/getAllQuestionsFromQuiz')
-const { createQuestion, createAnswer } = require('../../db/queries')
+const { insertQuestionAndAnswer } = require('../../db/queries')
 const Joi = require('joi')
 
 const connectQuestionRoutes = async (router) => {
@@ -27,9 +27,12 @@ const connectQuestionRoutes = async (router) => {
     const { questionText, quizId, acceptedAnswers, extraInfo = '' } = value
 
     try {
-      const insertedQuestion = await createQuestion(quizId, questionText)
-      const { questionId } = insertedQuestion
-      await createAnswer(acceptedAnswers, extraInfo, questionId)
+      await insertQuestionAndAnswer(
+        quizId,
+        questionText,
+        acceptedAnswers,
+        extraInfo
+      )
       response.send('Question and answer inserted into the database')
     } catch (err) {
       console.log(err)

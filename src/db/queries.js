@@ -23,17 +23,37 @@ const getSingleQuestionFromQuiz = async ({ quizId, questionId }) => {
   return correctAnswers
 }
 
-const createQuestion = async (quizId, questionText) => {
+const insertQuestionAndAnswer = async (
+  quizId,
+  questionText,
+  acceptedAnswers,
+  extraInfo
+) => {
   const res = await pool.query(
-    `INSERT INTO questions (question_text, quiz_id) VALUES ('${questionText}', ${parseInt(
-      quizId
-    )}) RETURNING *;`
+    `WITH question_insert AS (
+      INSERT INTO questions (question_text,
+          quiz_id)
+          VALUES('${questionText}',
+            ${parseInt(quizId)})
+        RETURNING
+          id AS question_id
+      ) INSERT INTO answers (accepted_answers, extra_info, question_id)
+      SELECT
+        '${acceptedAnswers}',
+        '${extraInfo}',
+        question_id
+      FROM
+        question_insert
+      RETURNING
+        *;
+    `
   )
+  console.log({ res: res.rows[0] })
   return { ...res.rows[0] }
 }
 
 module.exports = {
   getAllQuestionsFromQuiz,
   getSingleQuestionFromQuiz,
-  createQuestion,
+  insertQuestionAndAnswer,
 }
