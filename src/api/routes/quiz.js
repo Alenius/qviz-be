@@ -11,7 +11,9 @@ const connectQuizRoutes = async (router) => {
     const { value, error: validationError } = Joi.object({
       quizName: Joi.string(),
       author: Joi.string(),
-    }).validate(request.query)
+    })
+      .or('quizName', 'author')
+      .validate(request.query)
 
     if (validationError) {
       response.status(400).send(String(validationError))
