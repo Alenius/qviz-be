@@ -48,7 +48,6 @@ const insertQuestionAndAnswer = async (
         *;
     `
   )
-  console.log({ res: res.rows[0] })
   return { ...res.rows[0] }
 }
 
