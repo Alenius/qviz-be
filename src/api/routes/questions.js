@@ -1,5 +1,6 @@
 const { getAllQuestions } = require('../../services/getAllQuestionsFromQuiz')
-const { createQuestion } = require('../../db/queries')
+const { createQuestion, createAnswer } = require('../../db/queries')
+const Joi = require('joi')
 
 const connectQuestionRoutes = async (router) => {
   router.get('/questions', async (request, response) => {
@@ -12,10 +13,24 @@ const connectQuestionRoutes = async (router) => {
   })
 
   router.post('/questions', async (request, response) => {
-    const { questionText, quizId } = request.body
+    const { value, error: validationError } = Joi.object({
+      questionText: Joi.string().required(),
+      quizId: Joi.string().required(),
+      acceptedAnswers: Joi.string().required(),
+      extraInfo: Joi.string(),
+    }).validate(request.body)
+
+    if (validationError) {
+      return response.status(500).send(String(validationError))
+    }
+
+    const { questionText, quizId, acceptedAnswers, extraInfo = '' } = value
+
     try {
-      const inserted = await createQuestion(quizId, questionText)
-      response.json({ ...inserted })
+      const insertedQuestion = await createQuestion(quizId, questionText)
+      const { questionId } = insertedQuestion
+      await createAnswer(acceptedAnswers, extraInfo, questionId)
+      response.send('Question and answer inserted into the database')
     } catch (err) {
       console.log(err)
       response
