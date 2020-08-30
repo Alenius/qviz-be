@@ -1,7 +1,43 @@
-const { createQuiz } = require('../../db/queries')
+const {
+  createQuiz,
+  getQuiz,
+  getAllQuizzesByQuizName,
+  getAllQuizzesByAuthor,
+} = require('../../db/queries')
 const Joi = require('joi')
 
 const connectQuizRoutes = async (router) => {
+  router.get('/quiz', async (request, response) => {
+    const { value, error: validationError } = Joi.object({
+      quizName: Joi.string(),
+      author: Joi.string(),
+    }).validate(request.query)
+
+    if (validationError) {
+      response.status(400).send(String(validationError))
+    }
+
+    const { quizName, author } = value
+
+    try {
+      if (author && !quizName) {
+        const fetched = await getAllQuizzesByAuthor(author)
+        response.send({ foundQuizzes: fetched })
+      } else if (quizName && !author) {
+        const fetched = await getAllQuizzesByQuizName(quizName)
+        response.send({ foundQuizzes: fetched })
+      } else {
+        const fetched = await getQuiz(quizName, author)
+        response.send(fetched)
+      }
+    } catch (err) {
+      console.error(err)
+      response
+        .status(500)
+        .send('Something went wrong when querying the database')
+    }
+  })
+
   router.post('/quiz', async (request, response) => {
     const { value, error: validationError } = Joi.object({
       quizName: Joi.string().required(),

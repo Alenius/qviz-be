@@ -1,4 +1,5 @@
-const { head, nth } = require('ramda')
+const { head, nth, toLower } = require('ramda')
+const { query } = require('express')
 
 const Pool = require('pg').Pool
 const pool = new Pool({
@@ -56,9 +57,30 @@ const createQuiz = async (quizName, author) => {
   INSERT INTO quiz (name, author)
       VALUES('${quizName}', '${author}')
     RETURNING
-      id AS quiz_idd
+      id AS quiz_id
   `)
   return { ...res.rows[0] }
+}
+
+const getQuiz = async (quizName, author) => {
+  const res = await pool.query(`
+  SELECT * from quiz WHERE lower(name)='${toLower(
+    quizName
+  )}' AND lower(author)='${toLower(author)}'`)
+
+  return { ...res.rows[0] }
+}
+
+const getAllQuizzesByAuthor = async (author) => {
+  const res = await pool.query(`
+  SELECT * from quiz WHERE lower(author)='${toLower(author)}'`)
+  return res.rows
+}
+
+const getAllQuizzesByQuizName = async (quizName) => {
+  const res = await pool.query(`
+  SELECT * from quiz WHERE lower(name)='${toLower(quizName)}'`)
+  return res.rows
 }
 
 module.exports = {
@@ -66,4 +88,7 @@ module.exports = {
   getSingleQuestionFromQuiz,
   insertQuestionAndAnswer,
   createQuiz,
+  getQuiz,
+  getAllQuizzesByAuthor,
+  getAllQuizzesByQuizName,
 }
