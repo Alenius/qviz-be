@@ -1,4 +1,4 @@
-const { head, nth, toLower } = require('ramda')
+const { head, nth, toLower, forEach } = require('ramda')
 const { query } = require('express')
 
 const Pool = require('pg').Pool
@@ -24,42 +24,37 @@ const getSingleQuestionFromQuiz = async ({ quizId, questionId }) => {
   return correctAnswers
 }
 
-const insertQuestionAndAnswer = async (
-  quizId,
-  questionText,
-  acceptedAnswers,
-  extraInfo
-) => {
-  const res = await pool.query(
-    `WITH question_insert AS (
-      INSERT INTO questions (question_text,
-          quiz_id)
-          VALUES('${questionText}',
-            ${parseInt(quizId)})
-        RETURNING
-          id AS question_id
-      ) INSERT INTO answers (accepted_answers, extra_info, question_id)
-      SELECT
-        '${acceptedAnswers}',
-        '${extraInfo}',
-        question_id
-      FROM
-        question_insert
-      RETURNING
-        *;
-    `
-  )
-  return { ...res.rows[0] }
-}
-
-const createQuiz = async (quizName, author) => {
-  const res = await pool.query(`
+const createQuiz = async (quizName, author, questionEntities) => {
+  const quizRes = await pool.query(`
   INSERT INTO quiz (name, author)
       VALUES('${quizName}', '${author}')
     RETURNING
       id AS quiz_id
   `)
-  return { ...res.rows[0] }
+
+  const quizId = quizRes.rows[0].quiz_id
+
+  forEach(async (entity) => {
+    await pool.query(
+      `WITH question_insert AS (
+      INSERT INTO questions (question_text,
+          quiz_id)
+          VALUES('${entity.questionText}',
+            ${parseInt(quizId)})
+        RETURNING
+          id AS question_id
+      ) INSERT INTO answers (accepted_answers, extra_info, question_id)
+      SELECT
+        '${entity.acceptedAnswers}',
+        '${entity.extraInfo}',
+        question_id
+      FROM
+        question_insert
+    `
+    )
+  }, questionEntities)
+
+  return { quizId }
 }
 
 const getQuiz = async (quizName, author) => {
@@ -86,7 +81,6 @@ const getAllQuizzesByQuizName = async (quizName) => {
 module.exports = {
   getAllQuestionsFromQuiz,
   getSingleQuestionFromQuiz,
-  insertQuestionAndAnswer,
   createQuiz,
   getQuiz,
   getAllQuizzesByAuthor,
