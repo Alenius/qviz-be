@@ -12,7 +12,7 @@ const pool = new Pool({
 
 const getAllQuestionsFromQuiz = async (quizId) => {
   const res = await pool.query(
-    `SELECT * from quiz WHERE id=${quizId} ORDER BY id ASC`
+    `SELECT * from questions WHERE quiz_id=${quizId} `
   )
   return res.rows
 }

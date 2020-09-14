@@ -6,10 +6,20 @@ const { forEach } = require('ramda')
 const connectQuestionRoutes = async (router) => {
   router.get('/questions', async (request, response) => {
     const quizId = request.query.quizId
+    const { value, error: validationError } = Joi.object({
+      quizId: Joi.string().required(),
+    }).validate(request.query)
+
+    if (validationError) {
+      return response.status(500).send(String(validationError))
+    }
+
     if (!quizId) {
       response.status(400).send('Missing quizId parameter')
     }
-    const allQuestions = await getAllQuestions(quizId)
+    console.log({ value })
+    const allQuestions = await getAllQuestions(value.quizId)
+    console.log({ allQuestions })
     response.json({ questions: allQuestions })
   })
 
