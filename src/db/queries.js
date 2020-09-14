@@ -1,4 +1,4 @@
-const { head, nth, toLower, forEach } = require('ramda')
+const { head, nth, toLower, forEach, map, curry } = require('ramda')
 const { query } = require('express')
 
 const Pool = require('pg').Pool
@@ -57,31 +57,55 @@ const createQuiz = async (quizName, author, questionEntities) => {
   return { quizId }
 }
 
+const getNumberOfQuestionsForQuiz = async (quizId) => {
+  const res = await pool.query(`
+  SELECT * from questions
+  WHERE quiz_id=${quizId}`)
+  return res.rows.length
+}
+
+const enrichWithNoOfQuestions = map(async (it) => {
+  const numberOfQuestions = await getNumberOfQuestionsForQuiz(it.id)
+  return { ...it, numberOfQuestions }
+})
+
+const getAllQuizzes = async () => {
+  const res = await pool.query(`
+    SELECT * from quiz 
+  `)
+  const enrichedRes = await Promise.all(enrichWithNoOfQuestions(res.rows))
+  return enrichedRes
+}
+
 const getQuiz = async (quizName, author) => {
   const res = await pool.query(`
   SELECT * from quiz WHERE lower(name)='${toLower(
     quizName
   )}' AND lower(author)='${toLower(author)}'`)
+  const enrichedRes = await Promise.all(enrichWithNoOfQuestions(res.rows))
 
-  return { ...res.rows[0] }
+  return enrichedRes
 }
 
 const getAllQuizzesByAuthor = async (author) => {
   const res = await pool.query(`
   SELECT * from quiz WHERE lower(author)='${toLower(author)}'`)
-  return res.rows
+  const enrichedRes = await Promise.all(enrichWithNoOfQuestions(res.rows))
+  return enrichedRes
 }
 
 const getAllQuizzesByQuizName = async (quizName) => {
   const res = await pool.query(`
   SELECT * from quiz WHERE lower(name)='${toLower(quizName)}'`)
-  return res.rows
+  const enrichedRes = await Promise.all(enrichWithNoOfQuestions(res.rows))
+  return enrichedRes
 }
 
 module.exports = {
   getAllQuestionsFromQuiz,
   getSingleQuestionFromQuiz,
   createQuiz,
+  getAllQuizzes,
   getQuiz,
   getAllQuizzesByAuthor,
   getAllQuizzesByQuizName,

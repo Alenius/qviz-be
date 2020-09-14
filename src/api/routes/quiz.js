@@ -3,6 +3,7 @@ const {
   getQuiz,
   getAllQuizzesByQuizName,
   getAllQuizzesByAuthor,
+  getAllQuizzes,
 } = require('../../db/queries')
 const Joi = require('joi')
 
@@ -11,9 +12,7 @@ const connectQuizRoutes = async (router) => {
     const { value, error: validationError } = Joi.object({
       quizName: Joi.string(),
       author: Joi.string(),
-    })
-      .or('quizName', 'author')
-      .validate(request.query)
+    }).validate(request.query)
 
     if (validationError) {
       response.status(400).send(String(validationError))
@@ -22,7 +21,10 @@ const connectQuizRoutes = async (router) => {
     const { quizName, author } = value
 
     try {
-      if (author && !quizName) {
+      if (!quizName && !author) {
+        const fetched = await getAllQuizzes()
+        response.send({ foundQuizzes: fetched })
+      } else if (author && !quizName) {
         const fetched = await getAllQuizzesByAuthor(author)
         response.send({ foundQuizzes: fetched })
       } else if (quizName && !author) {
