@@ -87,6 +87,15 @@ const getQuiz = async (quizName, author) => {
   return enrichedRes
 }
 
+const getQuizName = async (quizId) => {
+  const res = await pool.query(`
+  SELECT name FROM quiz WHERE id=${quizId}
+  `)
+
+  const quizName = res.rows[0].name
+  return quizName
+}
+
 const getAllQuizzesByAuthor = async (author) => {
   const res = await pool.query(`
   SELECT * from quiz WHERE lower(author)='${toLower(author)}'`)
@@ -109,4 +118,5 @@ module.exports = {
   getQuiz,
   getAllQuizzesByAuthor,
   getAllQuizzesByQuizName,
+  getQuizName,
 }

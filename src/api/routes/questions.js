@@ -1,5 +1,5 @@
 const { getAllQuestions } = require('../../services/getAllQuestionsFromQuiz')
-const { insertQuestionAndAnswer } = require('../../db/queries')
+const { insertQuestionAndAnswer, getQuizName } = require('../../db/queries')
 const Joi = require('joi')
 const { forEach } = require('ramda')
 
@@ -17,10 +17,9 @@ const connectQuestionRoutes = async (router) => {
     if (!quizId) {
       response.status(400).send('Missing quizId parameter')
     }
-    console.log({ value })
     const allQuestions = await getAllQuestions(value.quizId)
-    console.log({ allQuestions })
-    response.json({ questions: allQuestions })
+    const quizName = await getQuizName(quizId)
+    response.json({ quizName, questions: allQuestions })
   })
 
   router.post('/questions', async (request, response) => {
