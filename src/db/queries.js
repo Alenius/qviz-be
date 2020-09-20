@@ -1,24 +1,41 @@
-const { head, nth, toLower, forEach, map, curry } = require('ramda')
-const { query } = require('express')
+const { head, toLower, forEach, map } = require('ramda')
+const { Client } = require('pg')
 
-const Pool = require('pg').Pool
-const pool = new Pool({
+const localClient = new Client({
   user: process.env.DB_USER,
   host: 'localhost',
-  database: 'qvis',
   password: process.env.DB_PASSWORD,
+  database: 'qvis',
   port: 5432,
 })
 
+console.log({ databaseurl: process.env.DATABASE_URL })
+const herokuClient = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+})
+
+const getClient = () => {
+  const isRunningLocally = process.env.RUN_LOCALLY === 'true'
+  const client = isRunningLocally ? localClient : herokuClient
+  return client
+}
+
+const client = getClient()
+client.connect()
+console.log({ client })
+
 const getAllQuestionsFromQuiz = async (quizId) => {
-  const res = await pool.query(
+  const res = await client.query(
     `SELECT * from questions WHERE quiz_id=${quizId} `
   )
   return res.rows
 }
 
 const getSingleQuestionFromQuiz = async ({ questionId }) => {
-  const res = await pool.query(
+  const res = await client.query(
     `SELECT * from answers WHERE question_id=${questionId}`
   )
   const { accepted_answers: acceptedAnswers, extra_info: extraInfo } = head(
@@ -29,7 +46,7 @@ const getSingleQuestionFromQuiz = async ({ questionId }) => {
 }
 
 const createQuiz = async (quizName, author, questionEntities) => {
-  const quizRes = await pool.query(`
+  const quizRes = await client.query(`
   INSERT INTO quiz (name, author)
       VALUES('${quizName}', '${author}')
     RETURNING
@@ -39,7 +56,7 @@ const createQuiz = async (quizName, author, questionEntities) => {
   const quizId = quizRes.rows[0].quiz_id
 
   forEach(async (entity) => {
-    await pool.query(
+    await client.query(
       `WITH question_insert AS (
       INSERT INTO questions (question_text,
           quiz_id)
@@ -62,7 +79,7 @@ const createQuiz = async (quizName, author, questionEntities) => {
 }
 
 const getNumberOfQuestionsForQuiz = async (quizId) => {
-  const res = await pool.query(`
+  const res = await client.query(`
   SELECT * from questions
   WHERE quiz_id=${quizId}`)
   return res.rows.length
@@ -74,7 +91,7 @@ const enrichWithNoOfQuestions = map(async (it) => {
 })
 
 const getAllQuizzes = async () => {
-  const res = await pool.query(`
+  const res = await client.query(`
     SELECT * from quiz 
   `)
   const enrichedRes = await Promise.all(enrichWithNoOfQuestions(res.rows))
@@ -82,7 +99,7 @@ const getAllQuizzes = async () => {
 }
 
 const getQuiz = async (quizName, author) => {
-  const res = await pool.query(`
+  const res = await client.query(`
   SELECT * from quiz WHERE lower(name)='${toLower(
     quizName
   )}' AND lower(author)='${toLower(author)}'`)
@@ -92,23 +109,23 @@ const getQuiz = async (quizName, author) => {
 }
 
 const getQuizName = async (quizId) => {
-  const res = await pool.query(`
-  SELECT name FROM quiz WHERE id=${quizId}
-  `)
+  const res = await client.query(`
+    SELECT name FROM quiz WHERE id=${quizId}
+    `)
 
   const quizName = res.rows[0].name
   return quizName
 }
 
 const getAllQuizzesByAuthor = async (author) => {
-  const res = await pool.query(`
-  SELECT * from quiz WHERE lower(author)='${toLower(author)}'`)
+  const res = await client.query(`
+    SELECT * from quiz WHERE lower(author)='${toLower(author)}'`)
   const enrichedRes = await Promise.all(enrichWithNoOfQuestions(res.rows))
   return enrichedRes
 }
 
 const getAllQuizzesByQuizName = async (quizName) => {
-  const res = await pool.query(`
+  const res = await client.query(`
   SELECT * from quiz WHERE lower(name)='${toLower(quizName)}'`)
   const enrichedRes = await Promise.all(enrichWithNoOfQuestions(res.rows))
   return enrichedRes

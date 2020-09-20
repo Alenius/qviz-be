@@ -1,4 +1,4 @@
-require('dotenv').config()
+const res = require('dotenv').config({ path: `${process.cwd()}/config/.env` })
 const express = require('express')
 const { connectRoutes } = require('./api')
 const { applyMiddlewares } = require('./api/middlewares')

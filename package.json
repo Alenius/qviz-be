@@ -4,7 +4,7 @@
   "description": "backend for simple quiz website",
   "main": "src/app.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon -r dotenv/config src/app.js dotenv_config_path=./config",
     "test": "test"
   },
   "keywords": [
