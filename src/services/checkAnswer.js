@@ -3,8 +3,12 @@ const FuzzySet = require('fuzzyset.js')
 const { getSingleQuestionFromQuiz } = require('../db/queries')
 
 const checkAnswer = async ({ quizId, questionId, userAnswer }) => {
-  const answers = await getSingleQuestionFromQuiz({ quizId, questionId })
-  const possibleAnswers = split('/', answers)
+  const { acceptedAnswers, extraInfo } = await getSingleQuestionFromQuiz({
+    quizId,
+    questionId,
+  })
+  console.log({ extraInfo })
+  const possibleAnswers = split('/', acceptedAnswers)
   const fs = FuzzySet(possibleAnswers)
   const fuzzyMatch = fs.get(userAnswer)
 
@@ -35,6 +39,7 @@ const checkAnswer = async ({ quizId, questionId, userAnswer }) => {
     correctAnswer: answer,
     rating,
     userAnswerWasCorrect: false,
+    extraInfo,
   }
 }
 

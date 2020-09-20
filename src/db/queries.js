@@ -17,11 +17,15 @@ const getAllQuestionsFromQuiz = async (quizId) => {
   return res.rows
 }
 
-const getSingleQuestionFromQuiz = async ({ quizId, questionId }) => {
-  const res = await pool.query(`SELECT answers from quiz WHERE id=${quizId}`)
-  const allAnswers = head(res.rows).answers
-  const correctAnswers = nth(questionId, allAnswers)
-  return correctAnswers
+const getSingleQuestionFromQuiz = async ({ questionId }) => {
+  const res = await pool.query(
+    `SELECT * from answers WHERE question_id=${questionId}`
+  )
+  const { accepted_answers: acceptedAnswers, extra_info: extraInfo } = head(
+    res.rows
+  )
+  console.log({ extraInfo, head: head(res.rows) })
+  return { acceptedAnswers, extraInfo }
 }
 
 const createQuiz = async (quizName, author, questionEntities) => {

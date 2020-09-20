@@ -3,12 +3,23 @@ const { checkAnswer } = require('../../services/checkAnswer')
 const connectAnswerRoutes = (router) => {
   router.get('/answer', async (request, response) => {
     const { quizId, questionId, userAnswer } = request.query
-    const { correctAnswer, rating, userAnswerWasCorrect } = await checkAnswer({
+    const {
+      correctAnswer,
+      rating,
+      userAnswerWasCorrect,
+      extraInfo,
+    } = await checkAnswer({
       quizId,
       questionId,
       userAnswer,
     })
-    response.json({ userAnswer, rating, correctAnswer, userAnswerWasCorrect })
+    response.json({
+      userAnswer,
+      rating,
+      correctAnswer,
+      userAnswerWasCorrect,
+      extraInfo,
+    })
   })
 }
 
