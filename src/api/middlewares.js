@@ -2,7 +2,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 var corsOptions = {
-  origin: ['http://localhost:3000', 'https://qviz-game.herokuapp.com/'],
+  origin: ['http://localhost:3000', 'https://qviz-game.herokuapp.com'],
 }
 
 const applyMiddlewares = (app) => {
