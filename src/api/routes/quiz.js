@@ -52,7 +52,7 @@ const connectQuizRoutes = async (router) => {
           Joi.object({
             questionText: Joi.string().required(),
             acceptedAnswers: Joi.string().required(),
-            extraInfo: Joi.string(),
+            extraInfo: Joi.string().allow(''),
           })
         )
         .required(),
