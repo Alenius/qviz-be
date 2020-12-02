@@ -7,7 +7,7 @@ const connectQuestionRoutes = async (router) => {
   router.get('/questions', async (request, response) => {
     const quizId = request.query.quizId
     const { value, error: validationError } = Joi.object({
-      quizId: Joi.string().required(),
+      quizId: Joi.number().required(),
     }).validate(request.query)
 
     if (validationError) {
