@@ -7,7 +7,7 @@ const checkAnswer = async ({ quizId, questionId, userAnswer }) => {
     quizId,
     questionId,
   })
-  console.log({ extraInfo })
+
   const possibleAnswers = split('/', acceptedAnswers)
   const fs = FuzzySet(possibleAnswers)
   const fuzzyMatch = fs.get(userAnswer)
