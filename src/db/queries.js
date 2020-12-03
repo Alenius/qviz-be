@@ -9,7 +9,6 @@ const localClient = new Client({
   port: 5432,
 })
 
-console.log({ databaseurl: process.env.DATABASE_URL })
 const herokuClient = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -41,7 +40,6 @@ const getSingleQuestionFromQuiz = async ({ questionId }) => {
   const { accepted_answers: acceptedAnswers, extra_info: extraInfo } = head(
     res.rows
   )
-  console.log({ extraInfo, head: head(res.rows) })
   return { acceptedAnswers, extraInfo }
 }
 
@@ -98,6 +96,14 @@ const getAllQuizzes = async () => {
   return enrichedRes
 }
 
+const getQuizById = async (quizId) => {
+  const res = await client.query(`
+    SELECT * FROM quiz WHERE id=${quizId} 
+  `)
+  const enrichedRes = await Promise.all(enrichWithNoOfQuestions(res.rows))
+  return enrichedRes
+}
+
 const getQuiz = async (quizName, author) => {
   const res = await client.query(`
   SELECT * from quiz WHERE lower(name)='${toLower(
@@ -131,13 +137,21 @@ const getAllQuizzesByQuizName = async (quizName) => {
   return enrichedRes
 }
 
+const deleteQuiz = async (quizId) => {
+  await client.query(`
+  DELETE FROM quiz WHERE id=${quizId}`)
+  return quizId
+}
+
 module.exports = {
   getAllQuestionsFromQuiz,
   getSingleQuestionFromQuiz,
   createQuiz,
   getAllQuizzes,
+  getQuizById,
   getQuiz,
   getAllQuizzesByAuthor,
   getAllQuizzesByQuizName,
   getQuizName,
+  deleteQuiz,
 }
