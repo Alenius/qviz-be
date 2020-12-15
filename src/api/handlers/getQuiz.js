@@ -4,11 +4,13 @@ const {
   getAllQuizzesByAuthor,
   getAllQuizzesByQuizName,
   getQuiz: getQuizQuery,
+  getQuizById,
 } = require('../../db/queries')
 
 const schema = Joi.object({
   quizName: Joi.string(),
   author: Joi.string(),
+  id: Joi.string(),
 })
 
 const getQuiz = async (request, response) => {
@@ -18,9 +20,15 @@ const getQuiz = async (request, response) => {
     response.status(400).send(validationError.toString())
   }
 
-  const { quizName, author } = value
+  const { quizName, author, id } = value
 
   try {
+    // TODO: clean this up
+    if (id) {
+      const fetched = await getQuizById(id)
+      response.send({ foundQuizzes: fetched })
+    }
+
     if (!quizName && !author) {
       const fetched = await getAllQuizzes()
       response.send({ foundQuizzes: fetched })
