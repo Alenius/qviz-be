@@ -6,7 +6,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./node_modules/@types", "types.ts"]
+    "typeRoots": ["./node_modules/@types", "types.ts"],
+    "sourceMap": true,
+    "outDir": "dist"
   },
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recommended",
