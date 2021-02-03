@@ -5,7 +5,7 @@ import { getQuestions } from './getQuestions'
 import { postQuestions } from './postQuestions'
 import { getAnswer } from './getAnswer'
 
-module.exports = {
+export {
   getQuiz,
   postQuiz,
   deleteQuiz,

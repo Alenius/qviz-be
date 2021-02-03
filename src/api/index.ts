@@ -3,7 +3,7 @@ import { connectQuestionRoutes } from './routes/questions'
 import { connectAnswerRoutes } from './routes/answers'
 import { connectQuizRoutes } from './routes/quiz'
 
-const connectRoutes = () => {
+export const connectRoutes = () => {
   const router = Router()
 
   connectQuestionRoutes(router)
@@ -17,4 +17,3 @@ const connectRoutes = () => {
   return router
 }
 
-module.exports = { connectRoutes }

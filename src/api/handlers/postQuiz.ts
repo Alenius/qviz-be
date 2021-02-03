@@ -18,7 +18,7 @@ const schema = Joi.object({
     .required(),
 })
 
-const postQuiz = async (request: Request, response: Response) => {
+export const postQuiz = async (request: Request, response: Response) => {
   const { value, error: validationError } = validateJoiSchema<PostQuizEndpointProps>(schema, request.body)
 
   if (validationError) {
@@ -39,5 +39,3 @@ const postQuiz = async (request: Request, response: Response) => {
       .send('Something went wrong when writing to the database')
   }
 }
-
-module.exports = { postQuiz }
