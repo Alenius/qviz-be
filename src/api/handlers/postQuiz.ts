@@ -1,3 +1,6 @@
+import { Request, Response } from "express"
+import { validateJoiSchema } from "../../utils"
+
 const Joi = require('joi')
 const { createQuiz } = require('../../db/queries')
 
@@ -15,8 +18,8 @@ const schema = Joi.object({
     .required(),
 })
 
-const postQuiz = async (request, response) => {
-  const { value, error: validationError } = schema.validate(request.body)
+const postQuiz = async (request: Request, response: Response) => {
+  const { value, error: validationError } = validateJoiSchema<PostQuizEndpointProps>(schema, request.body)
 
   if (validationError) {
     return response.status(500).send(String(validationError))

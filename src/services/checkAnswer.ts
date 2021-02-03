@@ -2,19 +2,12 @@ import { head, split, filter, length, pipe, lte, sort } from 'ramda'
 import FuzzySet from 'fuzzyset'
 import { getSingleQuestionFromQuiz } from '../db/queries'
 
-interface CheckAnswerProps {
-  quizId: number
-  questionId: number
-  userAnswer: string
-}
-
 type FuzzyMatch = [number, string]
 
-const checkAnswer = async ({ quizId, questionId, userAnswer }: CheckAnswerProps) => {
-  const { acceptedAnswers, extraInfo } = await getSingleQuestionFromQuiz({
-    quizId,
-    questionId,
-  })
+const checkAnswer = async ({ quizId, questionId, userAnswer }: GetAnswerEndpointProps) => {
+  const { acceptedAnswers, extraInfo } = await getSingleQuestionFromQuiz(
+    questionId
+  )
 
   const possibleAnswers = split('/', acceptedAnswers)
   const fs = FuzzySet(possibleAnswers)

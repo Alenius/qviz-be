@@ -1,11 +1,13 @@
-const Joi = require('joi')
-const {
+import { Request, Response } from 'express'
+import Joi from 'joi'
+import {
   getAllQuizzes,
   getAllQuizzesByAuthor,
   getAllQuizzesByQuizName,
-  getQuiz: getQuizQuery,
+  getQuiz as getQuizQuery,
   getQuizById,
-} = require('../../db/queries')
+} from '../../db/queries'
+import { validateJoiSchema } from '../../utils'
 
 const schema = Joi.object({
   quizName: Joi.string(),
@@ -13,8 +15,8 @@ const schema = Joi.object({
   id: Joi.string(),
 })
 
-const getQuiz = async (request, response) => {
-  const { value, error: validationError } = schema.validate(request.query)
+export const getQuiz = async (request: Request, response: Response) => {
+  const { value, error: validationError } = validateJoiSchema<GetQuizEndpointProps>(schema, request.query)
 
   if (validationError) {
     response.status(400).send(validationError.toString())
@@ -47,5 +49,3 @@ const getQuiz = async (request, response) => {
     response.status(500).send('Something went wrong when querying the database')
   }
 }
-
-module.exports = { getQuiz }

@@ -1,5 +1,5 @@
-const { head, toLower, forEach, map } = require('ramda')
-const { Client } = require('pg')
+import { head, toLower, forEach, map } from 'ramda'
+import { Client } from 'pg'
 
 const localClient = new Client({
   user: process.env.DB_USER,
@@ -26,14 +26,14 @@ const client = getClient()
 client.connect()
 console.log({ client })
 
-const getAllQuestionsFromQuiz = async (quizId) => {
+const getAllQuestionsFromQuiz = async (quizId: number) => {
   const res = await client.query(
     `SELECT * from questions WHERE quiz_id=${quizId} `
   )
   return res.rows
 }
 
-const getSingleQuestionFromQuiz = async ({ questionId }) => {
+const getSingleQuestionFromQuiz = async ( questionId: number) => {
   const res = await client.query(
     `SELECT * from answers WHERE question_id=${questionId}`
   )
@@ -43,7 +43,7 @@ const getSingleQuestionFromQuiz = async ({ questionId }) => {
   return { acceptedAnswers, extraInfo }
 }
 
-const createQuiz = async (quizName, author, questionEntities) => {
+const createQuiz = async (quizName: string, author: string, questionEntities: QuestionEntity[] ) => {
   const quizRes = await client.query(`
   INSERT INTO quiz (name, author)
       VALUES('${quizName}', '${author}')
@@ -76,14 +76,14 @@ const createQuiz = async (quizName, author, questionEntities) => {
   return { quizId }
 }
 
-const getNumberOfQuestionsForQuiz = async (quizId) => {
+const getNumberOfQuestionsForQuiz = async (quizId: number) => {
   const res = await client.query(`
   SELECT * from questions
   WHERE quiz_id=${quizId}`)
   return res.rows.length
 }
 
-const enrichWithNoOfQuestions = map(async (it) => {
+const enrichWithNoOfQuestions = map(async (it: any) => {
   const numberOfQuestions = await getNumberOfQuestionsForQuiz(it.id)
   return { ...it, numberOfQuestions }
 })
@@ -96,7 +96,7 @@ const getAllQuizzes = async () => {
   return enrichedRes
 }
 
-const getQuizById = async (quizId) => {
+const getQuizById = async (quizId: number) => {
   const res = await client.query(`
     SELECT * FROM quiz WHERE id=${quizId} 
   `)
@@ -104,7 +104,7 @@ const getQuizById = async (quizId) => {
   return enrichedRes
 }
 
-const getQuiz = async (quizName, author) => {
+const getQuiz = async (quizName: string, author: string) => {
   const res = await client.query(`
   SELECT * from quiz WHERE lower(name)='${toLower(
     quizName
@@ -114,7 +114,7 @@ const getQuiz = async (quizName, author) => {
   return enrichedRes
 }
 
-const getQuizName = async (quizId) => {
+const getQuizName = async (quizId: number) => {
   const res = await client.query(`
     SELECT name FROM quiz WHERE id=${quizId}
     `)
@@ -123,27 +123,27 @@ const getQuizName = async (quizId) => {
   return quizName
 }
 
-const getAllQuizzesByAuthor = async (author) => {
+const getAllQuizzesByAuthor = async (author: string) => {
   const res = await client.query(`
     SELECT * from quiz WHERE lower(author)='${toLower(author)}'`)
   const enrichedRes = await Promise.all(enrichWithNoOfQuestions(res.rows))
   return enrichedRes
 }
 
-const getAllQuizzesByQuizName = async (quizName) => {
+const getAllQuizzesByQuizName = async (quizName: string) => {
   const res = await client.query(`
   SELECT * from quiz WHERE lower(name)='${toLower(quizName)}'`)
   const enrichedRes = await Promise.all(enrichWithNoOfQuestions(res.rows))
   return enrichedRes
 }
 
-const deleteQuiz = async (quizId) => {
+const deleteQuiz = async (quizId: string) => {
   await client.query(`
   DELETE FROM quiz WHERE id=${quizId}`)
   return quizId
 }
 
-module.exports = {
+export {
   getAllQuestionsFromQuiz,
   getSingleQuestionFromQuiz,
   createQuiz,

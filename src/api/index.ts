@@ -1,7 +1,7 @@
-const { Router, response } = require('express')
-const { connectQuestionRoutes } = require('./routes/questions')
-const { connectAnswerRoutes } = require('./routes/answers')
-const { connectQuizRoutes } = require('./routes/quiz')
+import { Router } from 'express'
+import { connectQuestionRoutes } from './routes/questions'
+import { connectAnswerRoutes } from './routes/answers'
+import { connectQuizRoutes } from './routes/quiz'
 
 const connectRoutes = () => {
   const router = Router()

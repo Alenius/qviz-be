@@ -1,12 +1,15 @@
-const Joi = require('joi')
-const { deleteQuiz: deleteQuizQuery, getQuizById } = require('../../db/queries')
+import { Request, Response} from 'express'
+import Joi from 'joi'
+import { deleteQuiz as deleteQuizQuery, getQuizById } from '../../db/queries'
+import { validateJoiSchema } from '../../utils'
+
 
 const schema = Joi.object({
   quizId: Joi.number().required(),
 })
 
-const deleteQuiz = async (request, response) => {
-  const { value, error: validationError } = schema.validate(request.body)
+export const deleteQuiz = async (request: Request, response: Response) => {
+  const { value, error: validationError } = validateJoiSchema<DeleteQuizEndpointProps>(schema, request.body)
 
   if (validationError) {
     return response.status(500).send(String(validationError))
@@ -26,5 +29,3 @@ const deleteQuiz = async (request, response) => {
     response.status(500).send('Something went wrong when deleting the quiz')
   }
 }
-
-module.exports = { deleteQuiz }

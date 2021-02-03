@@ -1,9 +1,11 @@
-const Joi = require('joi')
-const { forEach } = require('ramda')
+import { Request, Response } from 'express'
+import Joi from 'joi'
+import { forEach } from 'ramda'
 
-const { insertQuestionAndAnswer } = require('../../db/queries')
+import { insertQuestionAndAnswer } from '../../db/queries'
+import { validateJoiSchema } from '../../utils'
 
-const schema = Joi.object({
+const schema = Joi.object<{questions: PostQuestionsEndpointProps}>({
   questions: Joi.array()
     .items(
       Joi.object({
@@ -16,8 +18,8 @@ const schema = Joi.object({
     .required(),
 })
 
-const postQuestions = async (request, response) => {
-  const { value, error: validationError } = schema.validate(request.body)
+export const postQuestions = async (request: Request<{}, PostQuestionsEndpointProps>, response: Response) => {
+  const { value, error: validationError } = validateJoiSchema<PostQuestionsEndpointProps>(schema, request.body)
 
   if (validationError) {
     return response.status(500).send(String(validationError))
@@ -43,5 +45,3 @@ const postQuestions = async (request, response) => {
       .send('Something went wrong when writing to the database')
   }
 }
-
-module.exports = { postQuestions }
