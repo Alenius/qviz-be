@@ -1,5 +1,6 @@
 import { head, toLower, forEach, map } from 'ramda'
 import { Client } from 'pg'
+import { QuestionEntity } from '../types'
 
 const localClient = new Client({
   user: process.env.DB_USER,
@@ -7,6 +8,7 @@ const localClient = new Client({
   password: process.env.DB_PASSWORD,
   database: 'qvis',
   port: 5432,
+  ssl: true
 })
 
 const herokuClient = new Client({
@@ -26,7 +28,7 @@ const client = getClient()
 client.connect()
 console.log({ client })
 
-const getAllQuestionsFromQuiz = async (quizId: number) => {
+const getAllQuestionsFromQuiz = async (quizId: string) => {
   const res = await client.query(
     `SELECT * from questions WHERE quiz_id=${quizId} `
   )
@@ -96,7 +98,7 @@ const getAllQuizzes = async () => {
   return enrichedRes
 }
 
-const getQuizById = async (quizId: number) => {
+const getQuizById = async (quizId: string) => {
   const res = await client.query(`
     SELECT * FROM quiz WHERE id=${quizId} 
   `)
@@ -114,7 +116,7 @@ const getQuiz = async (quizName: string, author: string) => {
   return enrichedRes
 }
 
-const getQuizName = async (quizId: number) => {
+const getQuizName = async (quizId: string) => {
   const res = await client.query(`
     SELECT name FROM quiz WHERE id=${quizId}
     `)

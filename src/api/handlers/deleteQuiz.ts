@@ -1,6 +1,7 @@
 import { Request, Response} from 'express'
 import Joi from 'joi'
 import { deleteQuiz as deleteQuizQuery, getQuizById } from '../../db/queries'
+import { DeleteQuizEndpointProps } from '../../types'
 import { validateJoiSchema } from '../../utils'
 
 

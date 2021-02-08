@@ -1,24 +1,24 @@
-interface GetAnswerEndpointProps {
+export interface GetAnswerEndpointProps {
   quizId: number
   questionId: number
   userAnswer: string
 }
 
-interface GetQuizEndpointProps {
+export interface GetQuizEndpointProps {
   quizName?: string
-  author?: number
+  author?: string
   id?: string
 }
 
-interface GetQuestionsEndpointProps {
-  quizId: number
+export interface GetQuestionsEndpointProps {
+  quizId: string
 }
 
-interface DeleteQuizEndpointProps {
-  quizId: number
+export interface DeleteQuizEndpointProps {
+  quizId: string
 }
 
-interface PostQuestionsEndpointProps {
+export interface PostQuestionsEndpointProps {
   questions: {
     questionText: string
     quizId: string
@@ -27,13 +27,13 @@ interface PostQuestionsEndpointProps {
   }[]
 }
 
-interface QuestionEntity {
+export interface QuestionEntity {
   questionText: string
   acceptedAnswers: string
   extraInfo?: string
 }
 
-interface PostQuizEndpointProps {
+export interface PostQuizEndpointProps {
   quizName: string
   author: string
   questionEntities: QuestionEntity[]

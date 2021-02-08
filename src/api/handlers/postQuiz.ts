@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import { validateJoiSchema } from "../../utils"
+import { PostQuizEndpointProps } from '../../types'
 
 const Joi = require('joi')
 const { createQuiz } = require('../../db/queries')

@@ -3,6 +3,7 @@ import Joi from 'joi'
 import { getAllQuestions } from  '../../services/getAllQuestionsFromQuiz'
 import { getQuizName } from '../../db/queries'
 import { validateJoiSchema } from '../../utils'
+import { GetQuestionsEndpointProps } from '../../types'
 
 const schema = Joi.object({
   quizId: Joi.number().required(),
