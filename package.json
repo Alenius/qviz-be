@@ -4,7 +4,7 @@
   "description": "backend for simple quiz website",
   "main": "src/app.js",
   "scripts": {
-    "start": "nodemon -r dotenv/config src/app.js dotenv_config_path=./config",
+    "start": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/app.ts",
     "test": "test",
     "build": "npx tsc"
   },
