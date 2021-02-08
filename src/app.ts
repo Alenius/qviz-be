@@ -1,8 +1,6 @@
-import res from 'dotenv'
 import express from 'express'
 import { connectRoutes } from './api'
 import { applyMiddlewares } from './api/middlewares'
-res.config({ path: `${process.cwd()}/config/.env` })
 const port = process.env.PORT || 4000
 
 
