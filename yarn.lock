@@ -124,10 +124,10 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
-"@types/fuzzyset@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@types/fuzzyset/-/fuzzyset-1.0.2.tgz#7c4f0f3190812be6b2fe5961d673b9a95b5cb5f7"
-  integrity sha512-XfofpL92mqshtoltkBWIwK/mQNXr7l2HnZ14QYImbX3A3I1pZx1WUCmJCPQtqV/cFEam5l6wtAXzH5aWWEreQw==
+"@types/fuzzyset.js@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@types/fuzzyset.js/-/fuzzyset.js-0.0.2.tgz#5aab6eaebc50445c5752e6603d1724b834fe2f07"
+  integrity sha512-gNHcafWmEGjAULHs5br9XIQFiS8IzWeL8911al3aKV4fcFzyK52XHKmHHWbS+Xoixs3EsMyWb4z/hRai1QHK8w==
 
 "@types/joi@^17.2.3":
   version "17.2.3"
