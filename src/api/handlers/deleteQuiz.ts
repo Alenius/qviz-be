@@ -1,16 +1,18 @@
-import { Request, Response} from 'express'
+import { Request, Response } from 'express'
 import Joi from 'joi'
 import { deleteQuiz as deleteQuizQuery, getQuizById } from '../../db/queries'
-import { DeleteQuizEndpointProps } from '../../types'
+import { DeleteQuizEndpointProps } from '../../../types'
 import { validateJoiSchema } from '../../utils'
-
 
 const schema = Joi.object({
   quizId: Joi.number().required(),
 })
 
 export const deleteQuiz = async (request: Request, response: Response) => {
-  const { value, error: validationError } = validateJoiSchema<DeleteQuizEndpointProps>(schema, request.body)
+  const {
+    value,
+    error: validationError,
+  } = validateJoiSchema<DeleteQuizEndpointProps>(schema, request.body)
 
   if (validationError) {
     return response.status(500).send(String(validationError))

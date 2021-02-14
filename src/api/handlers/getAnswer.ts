@@ -1,9 +1,16 @@
-import { Request, Response} from 'express'
+import { Request, Response } from 'express'
 import { checkAnswer } from '../../services/checkAnswer'
-import { GetAnswerEndpointProps } from '../../types'
+import { GetAnswerEndpointProps } from '../../../types'
 
-export const getAnswer = async (request: Request<{}, {}, {}, GetAnswerEndpointProps>, response: Response) => {
-  const { quizId, questionId, userAnswer }: GetAnswerEndpointProps = request.query
+export const getAnswer = async (
+  request: Request<{}, {}, {}, GetAnswerEndpointProps>,
+  response: Response
+) => {
+  const {
+    quizId,
+    questionId,
+    userAnswer,
+  }: GetAnswerEndpointProps = request.query
   const {
     correctAnswer,
     rating,

@@ -8,7 +8,7 @@ import {
   getQuizById,
 } from '../../db/queries'
 import { validateJoiSchema } from '../../utils'
-import { GetQuizEndpointProps } from '../../types'
+import { GetQuizEndpointProps } from '../../../types'
 
 const schema = Joi.object({
   quizName: Joi.string(),
@@ -17,7 +17,10 @@ const schema = Joi.object({
 })
 
 export const getQuiz = async (request: Request, response: Response) => {
-  const { value, error: validationError } = validateJoiSchema<GetQuizEndpointProps>(schema, request.query)
+  const {
+    value,
+    error: validationError,
+  } = validateJoiSchema<GetQuizEndpointProps>(schema, request.query)
 
   if (validationError) {
     response.status(400).send(validationError.toString())

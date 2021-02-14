@@ -1,11 +1,14 @@
 import { head, split, filter, length, pipe, lte, sort } from 'ramda'
 import FuzzySet from 'fuzzyset.js'
 import { getSingleQuestionFromQuiz } from '../db/queries'
-import { GetAnswerEndpointProps } from '../types'
+import { GetAnswerEndpointProps } from '../../types'
 
 type FuzzyMatch = [number, string]
 
-const checkAnswer = async ({ questionId, userAnswer }: GetAnswerEndpointProps) => {
+const checkAnswer = async ({
+  questionId,
+  userAnswer,
+}: GetAnswerEndpointProps) => {
   const { acceptedAnswers, extraInfo } = await getSingleQuestionFromQuiz(
     questionId
   )
@@ -14,7 +17,8 @@ const checkAnswer = async ({ questionId, userAnswer }: GetAnswerEndpointProps) =
   const fs = FuzzySet(possibleAnswers)
   const fuzzyMatch: FuzzyMatch[] | null = fs.get(userAnswer)
 
-  if(!fuzzyMatch) throw new Error("Something went wrong with the fuzzy matching")
+  if (!fuzzyMatch)
+    throw new Error('Something went wrong with the fuzzy matching')
 
   // accept answer if any has 0.75 or higher
   const isAnswerAcceptable = pipe<FuzzyMatch[], FuzzyMatch[], number, boolean>(
@@ -47,6 +51,4 @@ const checkAnswer = async ({ questionId, userAnswer }: GetAnswerEndpointProps) =
   }
 }
 
-export {
-  checkAnswer,
-}
+export { checkAnswer }

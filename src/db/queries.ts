@@ -1,6 +1,6 @@
 import { head, toLower, forEach, map } from 'ramda'
 import { Client } from 'pg'
-import { QuestionEntity } from '../types'
+import { QuestionEntity } from '../../types'
 
 const localClient = new Client({
   user: process.env.DB_USER,
