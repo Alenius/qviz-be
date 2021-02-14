@@ -8,7 +8,6 @@ const localClient = new Client({
   password: process.env.DB_PASSWORD,
   database: 'qvis',
   port: 5432,
-  ssl: true
 })
 
 const herokuClient = new Client({
@@ -26,7 +25,6 @@ const getClient = () => {
 
 const client = getClient()
 client.connect()
-console.log({ client })
 
 const getAllQuestionsFromQuiz = async (quizId: string) => {
   const res = await client.query(
@@ -35,7 +33,7 @@ const getAllQuestionsFromQuiz = async (quizId: string) => {
   return res.rows
 }
 
-const getSingleQuestionFromQuiz = async ( questionId: number) => {
+const getSingleQuestionFromQuiz = async (questionId: number) => {
   const res = await client.query(
     `SELECT * from answers WHERE question_id=${questionId}`
   )
@@ -45,7 +43,11 @@ const getSingleQuestionFromQuiz = async ( questionId: number) => {
   return { acceptedAnswers, extraInfo }
 }
 
-const createQuiz = async (quizName: string, author: string, questionEntities: QuestionEntity[] ) => {
+const createQuiz = async (
+  quizName: string,
+  author: string,
+  questionEntities: QuestionEntity[]
+) => {
   const quizRes = await client.query(`
   INSERT INTO quiz (name, author)
       VALUES('${quizName}', '${author}')
