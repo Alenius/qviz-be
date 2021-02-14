@@ -2,12 +2,13 @@
   "name": "qviz-be",
   "version": "1.0.0",
   "description": "backend for simple quiz website",
-  "main": "src/app.js",
+  "main": "dist/app.js",
   "scripts": {
     "start": "nodemon dist/app.js",
     "start:dev": "nodemon -r dotenv/config --watch src/** --ext ts,json --ignore src/**/*.spec.ts --exec ts-node src/app.ts dotenv_config_path=./config/.env",
     "test": "test",
-    "build": "npx tsc"
+    "build": "tsc",
+    "postinstall": "build"
   },
   "keywords": [
     "quiz",
