@@ -1,13 +1,6 @@
-import { getQuiz } from './getQuiz'
-import { postQuiz } from './postQuiz'
-import { deleteQuiz } from './deleteQuiz'
-import { getQuestions } from './getQuestions'
-import { getAnswer } from './getAnswer'
-
-export {
-  getQuiz,
-  postQuiz,
-  deleteQuiz,
-  getQuestions,
-  getAnswer,
-}
+export * from './getQuiz'
+export * from './postQuiz'
+export * from './deleteQuiz'
+export * from './getQuestions'
+export * from './getAnswer'
+export * from './createUser'
