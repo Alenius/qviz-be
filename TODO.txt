@@ -1,0 +1,1 @@
+- Move connecting the DB to some setup function and pass the instance down
