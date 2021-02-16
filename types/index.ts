@@ -38,3 +38,12 @@ export interface PostQuizEndpointProps {
   author: string
   questionEntities: QuestionEntity[]
 }
+
+export interface CreateUserEndpointProps {
+  username: string
+  password: string
+}
+
+export interface User {
+  username: string
+}
