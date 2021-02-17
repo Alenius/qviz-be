@@ -25,7 +25,7 @@ export const auth: RequestHandler = (req, res, next) => {
   }
 }
 
-export const applyMiddlewares = (app: Application) => {
+export const applyGeneralMiddlewares = (app: Application) => {
   app.use(cors(corsOptions))
   app.use(bodyParser.json())
   app.use(
