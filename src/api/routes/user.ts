@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { createUser } from '../handlers'
 
-export const createUserRoute = async (router: Router) => {
+export const connectUserRoutes = async (router: Router) => {
   router.post('/user', createUser)
 }
