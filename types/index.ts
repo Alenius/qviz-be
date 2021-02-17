@@ -1,3 +1,6 @@
+import { Client } from 'pg'
+import { insertUser } from '../src/db/queries/users/insertUser'
+
 export interface GetAnswerEndpointProps {
   quizId: number
   questionId: number
@@ -46,4 +49,8 @@ export interface CreateUserEndpointProps {
 
 export interface User {
   username: string
+}
+
+export interface QvizDB extends Client {
+  insertUser: ReturnType<typeof insertUser>
 }

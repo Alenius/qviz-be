@@ -1,12 +1,16 @@
 import express from 'express'
 import { connectRoutes } from './api'
-import { applyMiddlewares } from './api/middlewares'
+import { applyGeneralMiddlewares } from './api/middlewares'
+import { setup } from './setup'
 const port = process.env.PORT || 4000
-
 
 const startServer = () => {
   const app = express()
-  applyMiddlewares(app)
+
+  const { db } = setup()
+  app.request.db = db
+
+  applyGeneralMiddlewares(app)
 
   const router = connectRoutes()
   app.use('/', router)
