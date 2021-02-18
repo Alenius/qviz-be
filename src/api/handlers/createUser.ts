@@ -1,8 +1,10 @@
 import { Request, Response } from 'express'
 import Joi from 'joi'
+import bcrypt from 'bcrypt'
 
 import { CreateUserEndpointProps } from '../../../types'
-import { validateJoiSchema } from '../../utils'
+import { validateJoiSchema, generateAuthToken } from '../../utils'
+import { head } from 'ramda'
 
 const schema = Joi.object({
   username: Joi.string().required(),
@@ -26,8 +28,22 @@ export const createUser = async (
   const { username, password } = value
 
   try {
-    await dbClient.insertUser(username, password)
-    response.status(200).send(`User was inserted with username ${username}`)
+    const encryptedPassword = await bcrypt.hash(password, 10)
+
+    const updatedRows = await dbClient.insertUser(username, encryptedPassword)
+    const user = head(updatedRows.rows)
+
+    if (!user) throw Error('Something went horribly wrong when inserting user')
+
+    const authToken = generateAuthToken(user)
+    console.log({ user })
+
+    response
+      .header('x-auth-token', authToken)
+      .status(200)
+      .send(
+        `User was inserted with username ${user.username} and id ${user.id}`
+      )
   } catch (err) {
     if (err.code === '23505') {
       response.status(409).send('A user with that username already exists')

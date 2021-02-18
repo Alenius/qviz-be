@@ -7,5 +7,5 @@ export const insertUser = (db: QvizDB) => async (
   db.query<User>(`
     INSERT INTO users (username, password)
     VALUES('${username}', '${password}')
-    RETURNING username
+    RETURNING id, username
     `)
