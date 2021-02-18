@@ -12,7 +12,7 @@ const schema = Joi.object({
 })
 
 export const createUser = async (
-  request: Request<{}, {}, CreateUserEndpointProps>,
+  request: Request<undefined, undefined, CreateUserEndpointProps>,
   response: Response
 ) => {
   const {
@@ -36,14 +36,11 @@ export const createUser = async (
     if (!user) throw Error('Something went horribly wrong when inserting user')
 
     const authToken = generateAuthToken(user)
-    console.log({ user })
 
-    response
-      .header('x-auth-token', authToken)
-      .status(200)
-      .send(
-        `User was inserted with username ${user.username} and id ${user.id}`
-      )
+    response.header('x-auth-token', authToken).status(200).send({
+      userId: user.id,
+      username: user.username,
+    })
   } catch (err) {
     if (err.code === '23505') {
       response.status(409).send('A user with that username already exists')
