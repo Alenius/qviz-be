@@ -31,6 +31,7 @@ export interface PostQuestionsEndpointProps {
 }
 
 export interface QuestionEntity {
+  id: string
   questionText: string
   acceptedAnswers: string
   extraInfo?: string
