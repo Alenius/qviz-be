@@ -1,11 +1,8 @@
 import { Request, Response } from 'express'
 import Joi from 'joi'
-import { length } from 'ramda'
 
 import { CreateUserEndpointProps } from '../../../types'
-import { getSingleUser } from '../../db/queries/users/getSingleUser'
 import { validateJoiSchema } from '../../utils'
-import { createUser as createUserQuery } from '../../db/queries/users/createUser'
 
 const schema = Joi.object({
   username: Joi.string().required(),
@@ -13,13 +10,14 @@ const schema = Joi.object({
 })
 
 export const createUser = async (
-  request: Request<{}, {}, {}, CreateUserEndpointProps>,
+  request: Request<{}, {}, CreateUserEndpointProps>,
   response: Response
 ) => {
   const {
     value,
     error: validationError,
-  } = validateJoiSchema<CreateUserEndpointProps>(schema, request.query)
+  } = validateJoiSchema<CreateUserEndpointProps>(schema, request.body)
+  const dbClient = request.db
 
   if (validationError) {
     return response.status(500).send(String(validationError))
@@ -27,10 +25,15 @@ export const createUser = async (
 
   const { username, password } = value
 
-  const userAlreadyExists = Boolean(await getSingleUser(username))
+  try {
+    await dbClient.insertUser(username, password)
+    response.status(200).send(`User was inserted with username ${username}`)
+  } catch (err) {
+    if (err.code === '23505') {
+      response.status(409).send('A user with that username already exists')
+    }
 
-  if (userAlreadyExists) {
-    return response.status(409).send('User with that username already exists')
+    response.status(500).send('Something went wrong when inserting user')
   }
 
   return null
