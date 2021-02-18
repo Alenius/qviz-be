@@ -8,7 +8,8 @@
     "start:dev": "nodemon -r dotenv/config --watch src/** --watch types --ext ts,json --ignore src/**/*.spec.ts --exec ts-node --files types/express/index.d.ts src/app.ts dotenv_config_path=./config/.env",
     "test": "test",
     "build": "tsc",
-    "postinstall": "tsc"
+    "postinstall": "tsc",
+    "lint": "eslint"
   },
   "keywords": [
     "quiz",
@@ -40,6 +41,8 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/pg": "^7.14.9",
     "@types/ramda": "^0.27.36",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
     "eslint": "^7.18.0"
   },
   "engines": {

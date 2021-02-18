@@ -4,12 +4,22 @@
     "commonjs": true,
     "es2020": true
   },
-  "extends": "eslint:recommended",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "globals": {
     "process": true
   },
-  "parserOptions": {
-    "ecmaVersion": 11
-  },
-  "rules": {}
+  "parser": "@typescript-eslint/parser",
+  "rules": {
+    "no-unused-vars": "error",
+    "no-console": "warn",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "off"
+  }
 }
