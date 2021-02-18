@@ -10,7 +10,7 @@ const schema = Joi.object({
 })
 
 export const getQuestions = async (
-  request: Request<{}, {}, {}, GetQuestionsEndpointProps>,
+  request: Request<unknown, unknown, unknown, GetQuestionsEndpointProps>,
   response: Response
 ) => {
   const {

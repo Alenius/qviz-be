@@ -3,7 +3,7 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import jwt from 'jsonwebtoken'
 
-var corsOptions = {
+const corsOptions = {
   origin: ['http://localhost:3000', 'https://qviz-game.herokuapp.com'],
 }
 

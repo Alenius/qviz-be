@@ -3,7 +3,7 @@ import { checkAnswer } from '../../services/checkAnswer'
 import { GetAnswerEndpointProps } from '../../../types'
 
 export const getAnswer = async (
-  request: Request<{}, {}, {}, GetAnswerEndpointProps>,
+  request: Request<unknown, unknown, unknown, GetAnswerEndpointProps>,
   response: Response
 ) => {
   const {

@@ -28,6 +28,7 @@ const checkAnswer = async ({
   )
 
   const getBestMatch = pipe<FuzzyMatch[], FuzzyMatch[], FuzzyMatch>(
+    // eslint-disable-next-line
     sort((a, b) => head<any>(b)! - head<any>(a)!), // FIXME: typings
     head
   )

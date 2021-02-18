@@ -80,14 +80,14 @@ const createQuiz = async (
   return { quizId }
 }
 
-const getNumberOfQuestionsForQuiz = async (quizId: number) => {
+const getNumberOfQuestionsForQuiz = async (quizId: string) => {
   const res = await client.query(`
   SELECT * from questions
   WHERE quiz_id=${quizId}`)
   return res.rows.length
 }
 
-const enrichWithNoOfQuestions = map(async (it: any) => {
+const enrichWithNoOfQuestions = map(async (it: QuestionEntity) => {
   const numberOfQuestions = await getNumberOfQuestionsForQuiz(it.id)
   return { ...it, numberOfQuestions }
 })

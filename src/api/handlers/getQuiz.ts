@@ -49,7 +49,6 @@ export const getQuiz = async (request: Request, response: Response) => {
       response.send(fetched)
     }
   } catch (err) {
-    console.error(err)
     response.status(500).send('Something went wrong when querying the database')
   }
 }
