@@ -8,7 +8,7 @@
     "start:dev": "nodemon -r dotenv/config --watch src/** --watch types --ext ts,json --ignore src/**/*.spec.ts --exec ts-node --files types/express/index.d.ts src/app.ts",
     "test": "test",
     "build": "tsc",
-    "postinstall": "yarn tsc && yarn db:migrate:up",
+    "postinstall": "yarn tsc && yarn db:migrate:up --env prod",
     "lint": "eslint",
     "start:dev:docker": "docker-compose --env-file ./.env up --force-recreate",
     "db:migrate:up": "db-migrate up",
