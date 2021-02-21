@@ -8,5 +8,13 @@
     "port": "5400",
     "schema": "public"
   },
+  "prod": {
+    "overwrite": {
+      "driver": "pg",
+      "ssl": {
+        "rejectUnauthorized": false
+      }
+    }
+  },
   "sql-file": "true"
 }
