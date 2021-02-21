@@ -11,12 +11,14 @@ export const getAnswer = async (
     questionId,
     userAnswer,
   }: GetAnswerEndpointProps = request.query
+
+  const db = request.db
   const {
     correctAnswer,
     rating,
     userAnswerWasCorrect,
     extraInfo,
-  } = await checkAnswer({
+  } = await checkAnswer(db)({
     quizId,
     questionId,
     userAnswer,

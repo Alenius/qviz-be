@@ -1,15 +1,14 @@
 import { head, split, filter, length, pipe, lte, sort } from 'ramda'
 import FuzzySet from 'fuzzyset.js'
-import { getSingleQuestionFromQuiz } from '../db/queries'
-import { GetAnswerEndpointProps } from '../../types'
+import { GetAnswerEndpointProps, QvizDB } from '../../types'
 
 type FuzzyMatch = [number, string]
 
-const checkAnswer = async ({
+const checkAnswer = (db: QvizDB) => async ({
   questionId,
   userAnswer,
 }: GetAnswerEndpointProps) => {
-  const { acceptedAnswers, extraInfo } = await getSingleQuestionFromQuiz(
+  const { acceptedAnswers, extraInfo } = await db.getSingleQuestionFromQuiz(
     questionId
   )
 

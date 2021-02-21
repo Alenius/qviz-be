@@ -3,7 +3,6 @@ import { validateJoiSchema } from '../../utils'
 import { PostQuizEndpointProps } from '../../../types'
 
 import Joi from 'joi'
-import { createQuiz } from '../../db/queries'
 
 const schema = Joi.object({
   quizName: Joi.string().required(),
@@ -25,6 +24,8 @@ export const postQuiz = async (request: Request, response: Response) => {
     error: validationError,
   } = validateJoiSchema<PostQuizEndpointProps>(schema, request.body)
 
+  const db = request.db
+
   if (validationError) {
     return response.status(500).send(String(validationError))
   }
@@ -32,7 +33,7 @@ export const postQuiz = async (request: Request, response: Response) => {
   const { quizName, author, questionEntities } = value
 
   try {
-    const { quizId } = await createQuiz(quizName, author, questionEntities)
+    const { quizId } = await db.insertQuiz(quizName, author, questionEntities)
     response.send(
       `Question and answer inserted into the database with quizId ${quizId}`
     )

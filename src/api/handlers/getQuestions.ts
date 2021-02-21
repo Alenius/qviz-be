@@ -1,7 +1,5 @@
 import { Request, Response } from 'express'
 import Joi from 'joi'
-import { getAllQuestions } from '../../services/getAllQuestionsFromQuiz'
-import { getQuizName } from '../../db/queries'
 import { validateJoiSchema } from '../../utils'
 import { GetQuestionsEndpointProps } from '../../../types'
 
@@ -18,13 +16,15 @@ export const getQuestions = async (
     error: validationError,
   } = validateJoiSchema<GetQuestionsEndpointProps>(schema, request.query)
 
+  const db = request.db
+
   const { quizId } = value
 
   if (validationError) {
     return response.status(500).send(String(validationError))
   }
 
-  const allQuestions = await getAllQuestions(value.quizId)
-  const quizName = await getQuizName(quizId)
+  const allQuestions = await db.getAllQuestionsFromQuiz(value.quizId)
+  const quizName = await db.getQuizName(quizId)
   response.json({ quizName, questions: allQuestions })
 }

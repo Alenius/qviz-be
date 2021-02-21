@@ -1,4 +1,3 @@
-import { getDbClient } from '../../utils'
 import { head } from 'ramda'
 import { QvizDB, User } from '../../../types'
 

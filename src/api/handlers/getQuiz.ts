@@ -1,12 +1,5 @@
 import { Request, Response } from 'express'
 import Joi from 'joi'
-import {
-  getAllQuizzes,
-  getAllQuizzesByAuthor,
-  getAllQuizzesByQuizName,
-  getQuiz as getQuizQuery,
-  getQuizById,
-} from '../../db/queries'
 import { validateJoiSchema } from '../../utils'
 import { GetQuizEndpointProps } from '../../../types'
 
@@ -22,6 +15,8 @@ export const getQuiz = async (request: Request, response: Response) => {
     error: validationError,
   } = validateJoiSchema<GetQuizEndpointProps>(schema, request.query)
 
+  const db = request.db
+
   if (validationError) {
     response.status(400).send(validationError.toString())
   }
@@ -31,21 +26,21 @@ export const getQuiz = async (request: Request, response: Response) => {
   try {
     // TODO: clean this up
     if (id) {
-      const fetched = await getQuizById(id)
+      const fetched = await db.getQuizById(id)
       response.send({ foundQuizzes: fetched })
     }
 
     if (!quizName && !author) {
-      const fetched = await getAllQuizzes()
+      const fetched = await db.getAllQuizzes()
       response.send({ foundQuizzes: fetched })
     } else if (author && !quizName) {
-      const fetched = await getAllQuizzesByAuthor(author)
+      const fetched = await db.getAllQuizzesByAuthor(author)
       response.send({ foundQuizzes: fetched })
     } else if (quizName && !author) {
-      const fetched = await getAllQuizzesByQuizName(quizName)
+      const fetched = await db.getAllQuizzesByQuizName(quizName)
       response.send({ foundQuizzes: fetched })
     } else {
-      const fetched = await getQuizQuery(quizName!, author!)
+      const fetched = await db.getQuiz(quizName!, author!)
       response.send(fetched)
     }
   } catch (err) {

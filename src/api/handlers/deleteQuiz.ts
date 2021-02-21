@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import Joi from 'joi'
-import { deleteQuiz as deleteQuizQuery, getQuizById } from '../../db/queries'
 import { DeleteQuizEndpointProps } from '../../../types'
 import { validateJoiSchema } from '../../utils'
 
@@ -14,6 +13,8 @@ export const deleteQuiz = async (request: Request, response: Response) => {
     error: validationError,
   } = validateJoiSchema<DeleteQuizEndpointProps>(schema, request.body)
 
+  const db = request.db
+
   if (validationError) {
     return response.status(500).send(String(validationError))
   }
@@ -21,11 +22,11 @@ export const deleteQuiz = async (request: Request, response: Response) => {
   const { quizId } = value
 
   try {
-    const exists = (await getQuizById(quizId)).length !== 0
+    const exists = (await db.getQuizById(quizId)).length !== 0
     if (!exists) {
       response.status(404).send('No quiz with that id found')
     }
-    await deleteQuizQuery(quizId)
+    await db.deleteQuiz(quizId)
     response.status(200).send({ quizId })
   } catch (err) {
     console.log(err)
