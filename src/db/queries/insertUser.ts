@@ -1,4 +1,4 @@
-import { QvizDB, User } from '../../../../types'
+import { QvizDB, User } from '../../../types'
 
 export const insertUser = (db: QvizDB) => async (
   username: string,

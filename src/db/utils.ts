@@ -1,4 +1,6 @@
 import { Client } from 'pg'
+import { map } from 'ramda'
+import { QuestionEntity, QvizDB } from '../../types'
 
 const localClient = new Client({
   user: process.env.DB_USER,
@@ -20,3 +22,9 @@ export const getDbClient = () => {
   const client = isRunningLocally ? localClient : herokuClient
   return client
 }
+
+export const enrichWithNoOfQuestions = (db: QvizDB) =>
+  map(async (it: QuestionEntity) => {
+    const numberOfQuestions = await db.getNumberOfQuestionsForQuiz(it.id)
+    return { ...it, numberOfQuestions }
+  })

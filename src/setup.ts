@@ -1,6 +1,6 @@
 import { Client } from 'pg'
 import { QvizDB } from '../types'
-import { insertUser } from './db/queries/users/insertUser'
+import { methods } from './db/queries'
 
 const localClient = new Client({
   user: process.env.DB_USER,
@@ -25,7 +25,22 @@ export const getDbClient = () => {
 
 const bindDbMethods = (client: Client): QvizDB => {
   const qvizDb = client as QvizDB
-  qvizDb.insertUser = insertUser(qvizDb)
+
+  qvizDb.deleteQuiz = methods.deleteQuiz(qvizDb)
+  qvizDb.getAllQuestionsFromQuiz = methods.getAllQuestionsFromQuiz(qvizDb)
+  qvizDb.getAllQuizzes = methods.getAllQuizzes(qvizDb)
+  qvizDb.getAllQuizzesByAuthor = methods.getAllQuizzesByAuthor(qvizDb)
+  qvizDb.getAllQuizzesByQuizName = methods.getAllQuizzesByQuizName(qvizDb)
+  qvizDb.getQuiz = methods.getQuiz(qvizDb)
+  qvizDb.getQuizById = methods.getQuizById(qvizDb)
+  qvizDb.getQuizName = methods.getQuizName(qvizDb)
+  qvizDb.getNumberOfQuestionsForQuiz = methods.getNumberOfQuestionsForQuiz(
+    qvizDb
+  )
+  qvizDb.getSingleQuestionFromQuiz = methods.getSingleQuestionFromQuiz(qvizDb)
+  qvizDb.getSingleUser = methods.getSingleUser(qvizDb)
+  qvizDb.insertQuiz = methods.insertQuiz(qvizDb)
+  qvizDb.insertUser = methods.insertUser(qvizDb)
 
   return qvizDb
 }
