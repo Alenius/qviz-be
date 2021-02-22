@@ -6,8 +6,8 @@ const localClient = new Client({
   user: process.env.DB_USER,
   host: 'localhost',
   password: process.env.DB_PASSWORD,
-  database: 'qvis',
-  port: 5432,
+  database: 'qviz',
+  port: 5400,
 })
 
 const herokuClient = new Client({
