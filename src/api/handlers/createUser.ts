@@ -37,17 +37,17 @@ export const createUser = async (
 
     const authToken = generateAuthToken(user)
 
-    response.header('x-auth-token', authToken).status(200).send({
-      userId: user.id,
+    return response.header('x-auth-token', authToken).status(200).send({
+      userId: user.userId,
       username: user.username,
     })
   } catch (err) {
     if (err.code === '23505') {
-      response.status(409).send('A user with that username already exists')
+      return response
+        .status(409)
+        .send('A user with that username already exists')
     }
 
-    response.status(500).send('Something went wrong when inserting user')
+    return response.status(500).send('Something went wrong when inserting user')
   }
-
-  return null
 }

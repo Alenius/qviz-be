@@ -14,7 +14,7 @@ export const validateJoiSchema = <T>(
 export const generateAuthToken = (user: User) => {
   const privateKey = process.env.AUTH_PRIVATE_KEY
   const token = jwt.sign(
-    { userId: user.id, username: user.username, isAdmin: false },
+    { userId: user.userId, username: user.username, isAdmin: false },
     privateKey!
   )
   return token

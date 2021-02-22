@@ -1,6 +1,6 @@
 declare namespace Express {
   interface Request {
-    user?: string
+    user?: import('../index').User
     db: import('../index').QvizDB
   }
 }

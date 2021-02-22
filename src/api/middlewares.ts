@@ -2,6 +2,7 @@ import { Application, RequestHandler } from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import jwt from 'jsonwebtoken'
+import { User } from '../../types'
 
 const corsOptions = {
   origin: ['http://localhost:3000', 'https://qviz-game.herokuapp.com'],
@@ -18,7 +19,7 @@ export const auth: RequestHandler = (req, res, next) => {
     const privateKey: jwt.Secret = process.env.AUTH_PRIVATE_KEY ?? ''
     if (!privateKey) throw Error('No private key')
     const decoded = jwt.verify(token as string, privateKey)
-    req.user = decoded as string
+    req.user = decoded as User
     next()
   } catch (err) {
     res.status(400).send('Invalid token')

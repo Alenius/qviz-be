@@ -49,7 +49,9 @@ export interface CreateUserEndpointProps {
 }
 
 export interface User {
-  id: string
+  userId: string
+  firstName: string
+  lastName: string
   username: string
 }
 
