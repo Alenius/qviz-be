@@ -1,16 +1,22 @@
 import { forEach } from 'ramda'
 import { QuestionEntity, QvizDB } from '../../../types'
 
+interface RawQuiz {
+  quiz_id: string
+  name: string
+  author_id: string
+}
+
 export const insertQuiz = (db: QvizDB) => async (
   quizName: string,
-  author: string,
+  userId: string,
   questionEntities: QuestionEntity[]
 ) => {
-  const quizRes = await db.query(`
-  INSERT INTO quiz (name, author)
-      VALUES('${quizName}', '${author}')
+  const quizRes = await db.query<RawQuiz>(`
+  INSERT INTO quiz (name, author_id)
+      VALUES('${quizName}', '${userId}')
     RETURNING
-      id AS quiz_id
+      quiz_id
   `)
 
   const quizId = quizRes.rows[0].quiz_id
@@ -21,9 +27,9 @@ export const insertQuiz = (db: QvizDB) => async (
       INSERT INTO questions (question_text,
           quiz_id)
           VALUES('${entity.questionText}',
-            ${parseInt(quizId)})
+            '${quizId}')
         RETURNING
-          id AS question_id
+          question_id
       ) INSERT INTO answers (accepted_answers, extra_info, question_id)
       SELECT
         '${entity.acceptedAnswers}',

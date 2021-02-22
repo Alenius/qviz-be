@@ -6,7 +6,6 @@ import Joi from 'joi'
 
 const schema = Joi.object({
   quizName: Joi.string().required(),
-  author: Joi.string().required(),
   questionEntities: Joi.array()
     .items(
       Joi.object({
@@ -30,10 +29,21 @@ export const postQuiz = async (request: Request, response: Response) => {
     return response.status(500).send(String(validationError))
   }
 
-  const { quizName, author, questionEntities } = value
+  const { quizName, questionEntities } = value
+  const user = request.user // get user from token
+
+  if (!user) {
+    return response.status(401).send('No auth token found. Access denied.')
+  }
+
+  console.log({ user })
 
   try {
-    const { quizId } = await db.insertQuiz(quizName, author, questionEntities)
+    const { quizId } = await db.insertQuiz(
+      quizName,
+      user.userId,
+      questionEntities
+    )
     response.send(
       `Question and answer inserted into the database with quizId ${quizId}`
     )
