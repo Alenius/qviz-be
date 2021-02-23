@@ -11,6 +11,7 @@ import { getSingleQuestionFromQuiz } from './getSingleQuestionFromQuiz'
 import { getSingleUser } from './getSingleUser'
 import { insertQuiz } from './insertQuiz'
 import { insertUser } from './insertUser'
+import { getUser } from './getUser'
 
 // I am after the methods itself so this is 'uncurrying' it
 interface DbMethods {
@@ -27,6 +28,7 @@ interface DbMethods {
   getSingleUser: ReturnType<typeof getSingleUser>
   insertQuiz: ReturnType<typeof insertQuiz>
   insertUser: ReturnType<typeof insertUser>
+  getUser: ReturnType<typeof getUser>
 }
 
 const methods = {
@@ -43,6 +45,7 @@ const methods = {
   getSingleUser,
   insertQuiz,
   insertUser,
+  getUser,
 }
 
 export { DbMethods, methods }

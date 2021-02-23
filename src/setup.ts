@@ -38,6 +38,7 @@ const bindDbMethods = (client: Client): QvizDB => {
   qvizDb.getSingleUser = methods.getSingleUser(qvizDb)
   qvizDb.insertQuiz = methods.insertQuiz(qvizDb)
   qvizDb.insertUser = methods.insertUser(qvizDb)
+  qvizDb.getUser = methods.getUser(qvizDb)
 
   return qvizDb
 }

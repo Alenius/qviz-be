@@ -48,11 +48,14 @@ export interface CreateUserEndpointProps {
   password: string
 }
 
+export type GetUserEndpointProps = CreateUserEndpointProps
+
 export interface User {
   userId: string
   firstName: string
   lastName: string
   username: string
+  password: string
 }
 
 export type QvizDB = Client & DbMethods
