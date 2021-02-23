@@ -36,8 +36,6 @@ export const postQuiz = async (request: Request, response: Response) => {
     return response.status(401).send('No auth token found. Access denied.')
   }
 
-  console.log({ user })
-
   try {
     const { quizId } = await db.insertQuiz(
       quizName,
