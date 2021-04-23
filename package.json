@@ -5,7 +5,8 @@
   "main": "dist/app.js",
   "scripts": {
     "start": "nodemon dist/src/app.js",
-    "start:dev": "nodemon -r dotenv/config --watch src/** --watch types --ext ts,json --ignore src/**/*.spec.ts --exec ts-node --files types/express/index.d.ts src/app.ts",
+    "start:dev": "yarn start:dev:docker && yarn start:dev:server",
+    "start:dev:server": "nodemon -r dotenv/config --watch src/** --watch types --ext ts,json --ignore src/**/*.spec.ts --exec ts-node --files types/express/index.d.ts src/app.ts",
     "test": "test",
     "build": "tsc",
     "postinstall": "yarn tsc && yarn db:migrate:up --env prod",

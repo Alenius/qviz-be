@@ -39,9 +39,10 @@ export const getUser = async (
 
     const authToken = generateAuthToken(user)
 
-    return response.header('x-auth-token', authToken).status(200).send({
+    return response.status(200).send({
       userId: user.userId,
       username: user.username,
+      token: authToken,
     })
   } catch (err) {
     return response
